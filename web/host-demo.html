@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Plataforma madre — demo SafeUpdate embebido</title>
+  <link rel="stylesheet" href="safe-update-module/styles.css" />
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 0; background: #0f1419; color: #e7ecf1; }
+    header { padding: 1rem 1.5rem; border-bottom: 1px solid #2a3441; display: flex; gap: 1rem; align-items: center; }
+    nav a { color: #8ab4ff; margin-right: 1rem; text-decoration: none; }
+    main { padding: 1.5rem; max-width: 960px; }
+    .card { background: #1a2332; border-radius: 12px; padding: 1.25rem; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <strong>Portal demo</strong>
+    <nav>
+      <a href="#">Inicio</a>
+      <a href="#">Perfil</a>
+      <a href="host-demo.html">Seguridad → SafeUpdate</a>
+    </nav>
+  </header>
+  <main>
+    <h1>Evaluar un programa antes de instalarlo</h1>
+    <p class="muted">Panel de confianza: alerta, cuánto se pudo revisar y qué falta comprobar.</p>
+    <div class="card" id="safe-update-root" data-api-base="" data-user-id="demo-user" data-tenant-id="demo-tenant"></div>
+  </main>
+  <script src="safe-update-module/app.js"></script>
+</body>
+</html>

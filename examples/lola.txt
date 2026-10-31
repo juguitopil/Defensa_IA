@@ -1,0 +1,8 @@
+
+https://raw.githubusercontent.com/mozilla/pdf.js/master/web/compressed.tracemonkey-pldi-09.pdf
+https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf
+https://raw.githubusercontent.com/github/gitignore/main/README.md
+Deben fallar (para mostrar el control):
+
+https://chatgpt.com/
+http://127.0.0.1/test.bin

@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://defensa-ia.local/schemas/report-v1.schema.json",
+  "title": "ReportV1",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "analysisId",
+    "fileName",
+    "sha256",
+    "riskLevel",
+    "coverage",
+    "summaryStatus",
+    "categories",
+    "verifiedFindings",
+    "missingChecks",
+    "recommendations"
+  ],
+  "properties": {
+    "schemaVersion": { "type": "string" },
+    "analysisId": { "type": "string", "format": "uuid" },
+    "fileName": { "type": "string" },
+    "sha256": { "type": "string" },
+    "riskLevel": { "type": "string" },
+    "coverage": { "type": "string" },
+    "summaryStatus": { "type": "string" },
+    "aiNarrative": { "type": ["string", "null"] }
+  }
+}

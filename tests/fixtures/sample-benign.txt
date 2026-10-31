@@ -1,0 +1,1 @@
+Muestra benigna para pruebas técnicas de SafeUpdate (no ejecutable).

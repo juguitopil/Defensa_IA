@@ -1,0 +1,2 @@
+Documento de ejemplo benigno para la demo de SafeUpdate.
+No es un instalador. Sirve para mostrar hash, cobertura y limitaciones.

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://defensa-ia.local/schemas/finding.schema.json",
+  "title": "Finding",
+  "type": "object",
+  "required": ["id", "category", "severity", "title", "evidence", "limitations"],
+  "properties": {
+    "id": { "type": "string" },
+    "category": { "type": "string" },
+    "severity": { "type": "string" },
+    "title": { "type": "string" },
+    "evidence": { "type": "object" },
+    "limitations": { "type": "array", "items": { "type": "string" } }
+  }
+}
