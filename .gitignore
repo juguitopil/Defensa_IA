@@ -1,0 +1,13 @@
+bin/
+obj/
+.vs/
+*.user
+*.suo
+.Downloads/
+data/uploads/
+**/data/uploads/
+data/*.db
+.env
+.env.local
+node_modules/
+dist/

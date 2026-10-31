@@ -1,0 +1,2 @@
+ACME Contabilidad v2.0.0 — actualización de demostración con más contenido para cambiar tamaño y hash.
+Incluye notas de versión simuladas y un manifiesto ficticio.
