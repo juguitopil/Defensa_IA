@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Permission Guardian</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <strong>Permission Guardian</strong>
+    <p>Lee los permisos declarados. No los cambia ni los concede.</p>
+  </header>
+  <section>
+    <p>El agente revisa las extensiones instaladas y vuelve a evaluar las que ya están guardadas.</p>
+    <button id="revisar" class="secundario" type="button">Revisar ahora</button>
+    <p id="agente" role="status"></p>
+    <p><a href="http://localhost:5080/#/aplicaciones" target="_blank">Abrir los informes</a></p>
+  </section>
+  <label>Extensión
+    <select id="extension"></select>
+  </label>
+  <label>Función que declara
+    <select id="funcion">
+      <option value="edicion_imagenes">Editar imágenes</option>
+      <option value="notas">Tomar notas</option>
+      <option value="clima">Mostrar el clima local</option>
+      <option value="pdf">Convertir documentos a PDF</option>
+      <option value="gestor_contrasenas">Guardar y completar contraseñas</option>
+      <option value="productividad">Utilidad de productividad</option>
+      <option value="otro" selected>Otra función</option>
+    </select>
+  </label>
+  <p class="pista">Si el agente ya la registró, la función que elijas aquí queda confirmada.</p>
+  <p id="permisos"></p>
+  <button id="enviar" type="button">Analizar en Permission Guardian</button>
+  <p id="estado" role="status"></p>
+  <script src="permisos.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

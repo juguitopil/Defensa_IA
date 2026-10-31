@@ -1,0 +1,41 @@
+body {
+  margin: 0;
+  width: 320px;
+  padding: 16px;
+  font: 14px/1.4 "Segoe UI", sans-serif;
+  color: #1c1915;
+  background: #f7f4ef;
+}
+
+header p, #permisos, #estado { color: #5c564c; }
+
+label { display: flex; flex-direction: column; gap: 4px; font-weight: 600; margin: 10px 0; }
+
+select, button { font: inherit; }
+
+select { padding: 8px; border-radius: 8px; border: 1px solid #d9d0c3; }
+
+button {
+  width: 100%;
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 12px;
+  background: #1f4d3a;
+  color: #f6f3ec;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button.secundario {
+  background: transparent;
+  color: #1f4d3a;
+  border: 1px solid #1f4d3a;
+}
+
+button:disabled { opacity: 0.6; }
+
+#estado, #agente { min-height: 1.2em; }
+
+.pista, #agente, section p { color: #5c564c; }
+
+a { color: #1f4d3a; }

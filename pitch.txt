@@ -1,0 +1,74 @@
+PERMISSION GUARDIAN
+La pregunta no es “¿este permiso es peligroso?”.
+La pregunta es “¿este permiso se parece a lo que la aplicación dice que hace?”.
+
+
+EL PROBLEMA
+
+Antes de instalar una extensión, el navegador muestra una lista de permisos. Esa lista no dice si el acceso encaja con la función prometida. Leer todos los sitios web es un permiso enorme para un editor de fotos. El mismo permiso es esperable en un gestor de contraseñas, porque tiene que rellenar el inicio de sesión en cualquier página.
+
+Tratar todo permiso amplio como una amenaza produce dos errores. Se asusta a quien usa una herramienta legítima, y se deja pasar un alcance que no tiene relación con lo que la aplicación prometió. Permission Guardian existe para separar esas dos situaciones y dejar la decisión en la persona.
+
+
+QUÉ HACE
+
+Compara la función declarada con los permisos solicitados. Explica cada permiso, pone una puntuación de 0 a 100 y guarda el informe. Si una versión posterior pide más acceso, compara las dos versiones y señala el permiso nuevo.
+
+No instala, no bloquea y no concede permisos. Un permiso amplio es un indicio de alcance excesivo, no una prueba de daño.
+
+Hay tres formas de usarlo. Se registra una aplicación a mano. Se elige una extensión instalada y se indica su función. O el agente de Chrome revisa solo lo que ya está instalado y vuelve a evaluar lo guardado.
+
+
+CÓMO DECIDE
+
+La puntuación la calcula un motor de reglas, siempre igual para los mismos datos. Un modelo de lenguaje, si está configurado, solo redacta el texto. No mueve la puntuación y no declara que una extensión sea dañina.
+
+Cada permiso del catálogo tiene una sensibilidad:
+
+  Baja      5
+  Media    16
+  Alta     30
+  Crítica  54
+
+Ese peso se multiplica según si el propósito del permiso encaja con la función:
+
+  Encaja con lo que la función necesita                         × 0,10
+  Encaja, pero el permiso es sensible (alto o crítico)         × 0,22
+  Es un acceso amplio y la función lo tiene contemplado        × 0,38
+  Solo se relaciona en parte, o no es sensible y no encaja     × 0,75
+  Es sensible y no encaja con la función                       × 1,00
+
+La suma se redondea y se corta en 100.
+
+  0 a 19     Riesgo bajo
+  20 a 44    Riesgo medio
+  45 a 74    Riesgo alto
+  75 a 100   Riesgo crítico
+
+Las funciones del catálogo son editar imágenes, tomar notas, mostrar el clima, convertir a PDF, guardar contraseñas, una utilidad de productividad y “otra función”. Cada una declara qué propósitos espera, cuáles solo se relacionan y cuáles son amplios pero justificables. “Otra función” solo da por buenos el almacenamiento y la interfaz. Por eso una extensión registrada así, sin confirmar qué promete, puntúa alto si pide un acceso sensible. Eso empuja a confirmar la función antes de leer la cifra como un desajuste.
+
+El mismo permiso cambia de etiqueta según la función. En Photo Editor 2.0, leer cualquier sitio no forma parte de editar imágenes: cuenta entero, 54 puntos, y la versión queda en 78, riesgo crítico. En Llave Segura, un gestor de contraseñas, ese mismo permiso está contemplado: se marca como amplio y justificado, y la aplicación queda en 29, riesgo medio. Las dos piden un acceso grande. Solo una lo necesita para cumplir lo que promete.
+
+Una versión nueva se marca como cambio importante si aparece un permiso alto o crítico que antes no estaba, o si la puntuación sube 20 puntos o más.
+
+
+EL AGENTE
+
+La extensión de Chrome es el único sensor. Lee los permisos que el manifiesto ya declara. No los modifica.
+
+Al arrancar el navegador, cada 30 minutos, o al pulsar “Revisar ahora”, envía la lista instalada. Para cada extensión el agente hace una de tres cosas:
+
+  No estaba guardada. La registra con “Otra función” y deja la función pendiente de confirmar.
+  Misma versión y mismos permisos. Anota la fecha de revisión y conserva la puntuación.
+  Cambiaron los permisos. Guarda una versión nueva y la compara con la anterior.
+
+Si Chrome no cambió el número de versión, esa revisión se guarda como “1.0 · revisión 2” para no pisar la versión ya registrada. Una función que la persona ya confirmó no se sustituye: si el agente pudiera reetiquetar solo, podría bajar el riesgo llamando “gestor de contraseñas” a cualquier cosa. Cuando una extensión guardada ya no está instalada, el aviso lo dice y el informe se conserva.
+
+
+POR QUÉ ESTÁ HECHO ASÍ
+
+El criterio es la coherencia, no la sospecha. Un permiso sensible que encaja sigue siendo una superficie de acceso grande, y el informe lo dice, pero no lo trata igual que un permiso que la función no explica.
+
+La puntuación es reproducible. Dos personas, con la misma función y los mismos permisos, ven el mismo número. El texto puede redactarlo un modelo; la decisión numérica no depende de él.
+
+El agente observa y vuelve a evaluar. La persona confirma la función y decide si concede el permiso. El sistema no toma esa decisión por ella.
