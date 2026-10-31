@@ -250,16 +250,10 @@ function analyzeSender(mail: Mail, findings: Finding[], notes: string[]): void {
     });
   }
 
-  if (!TRUSTED_WORK.includes(fromDomain) && !brand) {
-    notes.push("No es un dominio interno de esta bandeja de demostración.");
-    push(findings, {
-      id: "unknown-domain",
-      category: "sender",
-      severity: "medium",
-      title: "Primera vez que vemos este dominio",
-      detail: `En esta bandeja no hay historial previo con ${fromDomain}. No es grave por sí solo; sí lo es si el resto del correo empuja a pulsar o abrir algo.`,
-      points: 10,
-    });
+  if (TRUSTED_WORK.includes(fromDomain)) {
+    notes.push("Dominio interno de la bandeja de laboratorio.");
+  } else if (!brand) {
+    notes.push(`Dominio del remitente: ${fromDomain}.`);
   }
 
   const failed = (["spf", "dkim", "dmarc"] as const).filter((key) => mail.auth[key] === "fail");
@@ -275,7 +269,7 @@ function analyzeSender(mail: Mail, findings: Finding[], notes: string[]): void {
   } else if (mail.auth.spf === "pass" && mail.auth.dkim === "pass") {
     notes.push("SPF y DKIM pasan: el servidor de envío encaja con el dominio.");
   } else if (mail.auth.spf === "none" && mail.auth.dkim === "none") {
-    notes.push("No hay resultado de autenticación en este mensaje de demostración.");
+    notes.push("Esta vista no muestra SPF, DKIM ni DMARC. El sello se basa en remitente, texto, enlaces y adjuntos.");
   }
 }
 

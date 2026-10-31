@@ -1,12 +1,6 @@
 import { X } from "lucide-react";
-import { useState } from "react";
 import { parseEml } from "../lib/import/eml";
-import { loadGoogleClientId, saveGoogleClientId } from "../lib/settings";
 import { useMail } from "../store";
-
-const PROJECT = "unified-era-470723-p2";
-const GMAIL_API = `https://console.cloud.google.com/apis/library/gmail.googleapis.com?project=${PROJECT}`;
-const OAUTH_CLIENT = `https://console.cloud.google.com/auth/clients/create?project=${PROJECT}`;
 
 function GoogleMark() {
   return (
@@ -21,8 +15,6 @@ function GoogleMark() {
 
 export function ConnectSettings() {
   const { state, closeSettings, connectGmail, disconnectGmail, importMail } = useMail();
-  const [clientId, setClientId] = useState(loadGoogleClientId());
-  const ready = clientId.includes(".apps.googleusercontent.com");
 
   if (!state.settingsOpen) return null;
 
@@ -40,7 +32,7 @@ export function ConnectSettings() {
               Entra en Sello
             </h2>
             <p className="mt-1 text-[0.85rem] leading-relaxed text-muted">
-              Elige tu cuenta de Google. Sirve para cualquier Gmail, no solo el tuyo. Sello solo lee; no envía ni borra.
+              Elige cualquier cuenta de Google. Sello solo lee; no envía ni borra nada en Gmail.
             </p>
           </div>
           <button
@@ -53,58 +45,22 @@ export function ConnectSettings() {
           </button>
         </div>
 
-        {!ready && (
-          <div className="mt-4 rounded-xl bg-paper px-3 py-3 text-[0.78rem] leading-relaxed text-muted">
-            <p className="font-semibold text-ink">Esto se hace una vez, para la app. Después cualquiera pulsa Continuar con Google.</p>
-            <ol className="mt-2 list-decimal space-y-1.5 pl-4">
-              <li>
-                <a className="font-semibold text-navy underline" href={GMAIL_API} target="_blank" rel="noreferrer">
-                  Activar Gmail
-                </a>
-              </li>
-              <li>
-                <a className="font-semibold text-navy underline" href={OAUTH_CLIENT} target="_blank" rel="noreferrer">
-                  Crear cliente
-                </a>
-                : tipo <strong>Aplicación web</strong>, origen{" "}
-                <code className="text-ink">http://localhost:5173</code>
-              </li>
-              <li>
-                En la pantalla de consentimiento, tipo <strong>Externo</strong> y publícala. Si se queda en «Prueba», solo
-                entran los correos que listes.
-              </li>
-            </ol>
-            <label className="mt-3 block">
-              <span className="font-semibold text-ink">Pega aquí el ID que termina en .apps.googleusercontent.com</span>
-              <input
-                value={clientId}
-                onChange={(event) => setClientId(event.target.value.trim())}
-                placeholder="xxxxx.apps.googleusercontent.com"
-                className="mt-1.5 h-10 w-full rounded-lg bg-sheet px-3 text-[0.82rem] text-ink outline-none ring-1 ring-line"
-              />
-            </label>
-          </div>
-        )}
-
         <button
           type="button"
           disabled={state.connecting || state.loadingMailbox}
-          onClick={() => {
-            if (clientId) saveGoogleClientId(clientId);
-            void connectGmail();
-          }}
+          onClick={() => void connectGmail()}
           className="mt-5 flex h-11 w-full items-center justify-center gap-3 rounded-xl bg-sheet text-[0.92rem] font-semibold text-ink ring-1 ring-line hover:bg-paper disabled:opacity-60"
         >
           <GoogleMark />
           {state.connecting || state.loadingMailbox ? "Abriendo Google…" : "Continuar con Google"}
         </button>
 
-        <label className="mt-3 flex h-11 w-full cursor-pointer items-center justify-center rounded-xl bg-paper text-[0.88rem] font-semibold text-ink">
+        <label className="relative mt-3 flex h-11 w-full cursor-pointer items-center justify-center rounded-xl bg-paper text-[0.88rem] font-semibold text-ink">
           Analizar un correo que ya tengas
           <input
             type="file"
             accept=".eml,message/rfc822"
-            className="sr-only"
+            className="absolute inset-0 cursor-pointer opacity-0"
             onChange={async (event) => {
               const file = event.target.files?.[0];
               if (!file) return;
@@ -121,13 +77,13 @@ export function ConnectSettings() {
           Seguir con la bandeja de prueba
         </button>
 
-        {state.source === "gmail" && (
+        {(state.source === "gmail" || state.source === "google") && (
           <button
             type="button"
             onClick={disconnectGmail}
             className="mt-1 h-10 w-full text-[0.82rem] font-semibold text-muted hover:text-ink"
           >
-            Cerrar sesión de Gmail
+            Cerrar sesión de Google
           </button>
         )}
 

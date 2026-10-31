@@ -81,12 +81,14 @@ export function Sidebar() {
 
       <div className="mt-auto rounded-xl bg-paper px-3 py-3">
         <p className="text-[0.78rem] font-semibold text-ink">
-          {state.source === "gmail" ? state.account.email : "Laboratorio"}
+          {state.source === "mock" ? "Laboratorio" : state.account.email}
         </p>
         <p className="mt-1 text-[0.72rem] leading-snug text-muted">
           {state.source === "gmail"
             ? "Sesión de Google en solo lectura. El agente revisa el correo abierto."
-            : "Bandeja de prueba. Entra con Google cuando quieras ver tu correo."}
+            : state.source === "google"
+              ? "Entraste con Google. El buzón real sigue bloqueado hasta que Google verifique Sello; usas la bandeja de prueba."
+              : "Bandeja de prueba. Entra con Google cuando quieras ver tu correo."}
         </p>
         <p className="mt-2 text-[0.7rem] font-semibold text-navy">Agente activo</p>
         <button
@@ -94,7 +96,7 @@ export function Sidebar() {
           onClick={openSettings}
           className="mt-2 text-[0.75rem] font-semibold text-navy hover:underline"
         >
-          {state.source === "gmail" ? "Cuenta" : "Continuar con Google"}
+          {state.source === "mock" ? "Continuar con Google" : "Cuenta"}
         </button>
       </div>
     </aside>

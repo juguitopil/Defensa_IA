@@ -12,10 +12,10 @@ import { createGmailAdapter, fetchGmailAccount } from "./lib/adapters/gmail";
 import { createMockAdapter } from "./lib/adapters/mock";
 import type { MailAdapter } from "./lib/adapters/types";
 import { ME } from "./lib/format";
-import { requestGmailToken, revokeGmailToken } from "./lib/gmail/auth";
+import { fetchGoogleProfile, requestGoogleSession, revokeGmailToken } from "./lib/gmail/auth";
 import { mergeAgent, requestAgentReview } from "./lib/security/agent";
 import { analyzeMail } from "./lib/security/analyze";
-import { loadGoogleClientId } from "./lib/settings";
+import { resolveGoogleClientId } from "./lib/settings";
 import type {
   Address,
   AgentStatus,
@@ -27,7 +27,7 @@ import type {
 } from "./types";
 
 export type NavId = FolderId | "alerts";
-export type MailSource = "mock" | "gmail";
+export type MailSource = "mock" | "google" | "gmail";
 
 interface ConfirmRequest {
   kind: "link" | "attachment";
@@ -458,30 +458,44 @@ export function MailProvider({ children }: { children: ReactNode }) {
     openSettings: () => dispatch({ type: "settings", open: true }),
     closeSettings: () => dispatch({ type: "settings", open: false }),
     connectGmail: async () => {
-      const clientId = loadGoogleClientId();
+      const clientId = await resolveGoogleClientId();
       if (!clientId) {
         dispatch({ type: "settings", open: true });
         dispatch({
           type: "mailboxError",
           message:
-            "Sello aún no puede abrir el selector de cuentas de Google. Estoy registrando la app en tu proyecto; en un momento «Continuar con Google» pedirá tu Gmail.",
+            "Google aún no tiene a Sello registrado. En cuanto esté el cliente, este botón abre el selector de cuentas.",
         });
         return;
       }
       dispatch({ type: "connecting", value: true });
       dispatch({ type: "mailboxError", message: null });
       try {
-        const token = await requestGmailToken(clientId);
-        tokenRef.current = token;
-        dispatch({ type: "loadingMailbox", value: true });
-        const account = await fetchGmailAccount(token);
-        adapterRef.current = createGmailAdapter(() => tokenRef.current, account);
-        const mails = await adapterRef.current.list();
+        const session = await requestGoogleSession(clientId);
+        tokenRef.current = session.token;
+        const profile = session.gmail ? await fetchGmailAccount(session.token) : await fetchGoogleProfile(session.token);
         askedRef.current = new Set();
-        dispatch({ type: "mailbox", mails, source: "gmail", account });
-        dispatch({ type: "toast", message: `Conectado a ${account.email}. Solo lectura.` });
+        if (session.gmail) {
+          dispatch({ type: "loadingMailbox", value: true });
+          adapterRef.current = createGmailAdapter(() => tokenRef.current, profile);
+          const mails = await adapterRef.current.list();
+          dispatch({ type: "mailbox", mails, source: "gmail", account: profile });
+          dispatch({ type: "toast", message: `Conectado a ${profile.email}. Solo lectura.` });
+          return;
+        }
+        adapterRef.current = createMockAdapter();
+        dispatch({
+          type: "mailbox",
+          mails: seedMails.map((mail) => ({ ...mail })),
+          source: "google",
+          account: profile,
+        });
+        dispatch({
+          type: "toast",
+          message: `Entraste como ${profile.email}. Google aún no deja leer Gmail a apps sin verificar; usas la bandeja de prueba.`,
+        });
       } catch (error) {
-        const message = error instanceof Error ? error.message : "No se pudo conectar Gmail.";
+        const message = error instanceof Error ? error.message : "No se pudo entrar con Google.";
         dispatch({ type: "mailboxError", message });
         dispatch({ type: "toast", message });
       }

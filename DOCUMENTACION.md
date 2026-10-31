@@ -1,8 +1,8 @@
 # Sello — documentación del programa
 
-Sello es un **cliente de correo web** con una **capa de seguridad siempre visible**. No es una herramienta aparte donde se pega un mensaje: es el correo mismo. El usuario lee, responde, reenvía, busca y organiza como en cualquier webmail, y en todo momento ve qué tan fiable es cada mensaje.
+Sello es una **capa de seguridad siempre visible** sobre el correo. La forma de usarlo de verdad es la **extensión de navegador**: te quedas en Gmail, con cualquier cuenta, y al abrir un mensaje ves el sello, el semáforo y el porqué. No pide otro inicio de sesión.
 
-El prototipo está pensado para que alguien elija usarlo **en lugar de su correo habitual** precisamente por esa vigilancia integrada.
+Sigue existiendo una **bandeja de laboratorio** en la web para probar correos de ejemplo sin Gmail.
 
 ---
 
@@ -225,18 +225,14 @@ Hace falta Node 18 o superior y pnpm.
 ```bash
 corepack prepare pnpm@10.18.3 --activate
 pnpm install
-pnpm dev
+pnpm build:extension
 ```
 
-Abre `http://localhost:5173`.
+Carga `dist-extension` como extensión descomprimida y abre Gmail.
 
-Variables opcionales (`.env`, a partir de `.env.example`):
+Laboratorio del sello (sin instalar): `pnpm dev` y `http://localhost:5173?lab=gmail`.
 
-| Variable | Uso |
-| --- | --- |
-| `VITE_GOOGLE_CLIENT_ID` | Client ID de la app (público). Tras configurarlo, el usuario solo ve Continuar con Google. |
-| `XAI_API_KEY` | Clave de Grok/xAI para el agente remoto. Sin ella, el agente local sigue explicando. |
-| `XAI_MODEL` | Por defecto `grok-4-fast-reasoning`. |
+Bandeja de prueba: `http://localhost:5173`.
 
 ---
 
@@ -244,19 +240,17 @@ Variables opcionales (`.env`, a partir de `.env.example`):
 
 **Listo**
 
-- Cliente de correo usable con datos de demo.
-- Sello, filtros, Alertas y panel explicativo.
-- Análisis estático de contenido, remitente, enlaces y PDFs.
+- Extensión sobre Gmail: cualquier cuenta, sin otro login.
+- Sello, semáforo y panel explicativo en el correo abierto.
+- Análisis estático de contenido, remitente, enlaces y PDFs (sin ejecutarlos).
 - Agente local de explicación.
-- Importar `.eml`.
-- Hueco y código de Gmail en solo lectura.
-- Aviso de alto riesgo sin bloquear la lectura.
+- Laboratorio web y bandeja de prueba.
 
-**Pendiente / condicionado a Google**
+**Pendiente**
 
-- Que **cualquier persona** entre solo con Google, sin ver IDs. Eso exige registrar Sello una vez (API de Gmail + cliente OAuth web + consentimiento Externo publicado).
-- Enviar o borrar correos de verdad en Gmail (hoy es solo lectura).
+- Publicar la extensión en Chrome Web Store.
 - Agente Grok en la nube (hace falta `XAI_API_KEY`).
+- SPF/DKIM/DMARC: Gmail no los muestra en la vista normal; el sello no los inventa.
 
 ---
 
@@ -266,8 +260,8 @@ Variables opcionales (`.env`, a partir de `.env.example`):
 2. Las explicaciones salen de lo que hay en el mensaje; no se inventan.
 3. El score se puede explicar (“partimos de 100, restamos por X”).
 4. Un PDF o un enlace sospechoso no se ejecuta; como mucho se descarga avisando.
-5. Gmail, si se conecta, entra en **solo lectura**.
-6. Un usuario normal no debería configurar Client IDs: eso es de la app, una vez.
+5. En Gmail Sello solo mira el mensaje abierto; no envía ni borra.
+6. Un usuario normal no configura Client IDs: entra en Gmail y ya.
 
 ---
 

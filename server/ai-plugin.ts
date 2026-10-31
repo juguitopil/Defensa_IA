@@ -1,5 +1,65 @@
+import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import type { IncomingMessage, ServerResponse } from "node:http";
+import { homedir } from "node:os";
+import { join } from "node:path";
 import type { Plugin } from "vite";
+
+function looksLikeClientId(value: string): boolean {
+  return value.includes(".apps.googleusercontent.com");
+}
+
+function readEnvClientId(): string {
+  const fromProcess = (process.env.VITE_GOOGLE_CLIENT_ID || "").trim();
+  if (looksLikeClientId(fromProcess)) return fromProcess;
+  const envPath = join(process.cwd(), ".env");
+  if (!existsSync(envPath)) return "";
+  const match = readFileSync(envPath, "utf8").match(/^VITE_GOOGLE_CLIENT_ID=(.+)$/m);
+  const value = match?.[1]?.trim().replace(/^["']|["']$/g, "") || "";
+  return looksLikeClientId(value) ? value : "";
+}
+
+function saveEnvClientId(clientId: string): void {
+  if (!looksLikeClientId(clientId)) return;
+  process.env.VITE_GOOGLE_CLIENT_ID = clientId;
+  const envPath = join(process.cwd(), ".env");
+  const previous = existsSync(envPath) ? readFileSync(envPath, "utf8") : "";
+  if (/^VITE_GOOGLE_CLIENT_ID=/m.test(previous)) {
+    writeFileSync(envPath, previous.replace(/^VITE_GOOGLE_CLIENT_ID=.*$/m, `VITE_GOOGLE_CLIENT_ID=${clientId}`), "utf8");
+    return;
+  }
+  writeFileSync(envPath, `${previous}${previous && !previous.endsWith("\n") ? "\n" : ""}VITE_GOOGLE_CLIENT_ID=${clientId}\n`, "utf8");
+}
+
+function clientIdFromJson(raw: string): string {
+  const data = JSON.parse(raw) as {
+    web?: { client_id?: string };
+    installed?: { client_id?: string };
+    client_id?: string;
+  };
+  return data.web?.client_id || data.installed?.client_id || data.client_id || "";
+}
+
+function ingestDownloads(): string {
+  const current = readEnvClientId();
+  if (current) return current;
+  const downloads = join(homedir(), "Downloads");
+  if (!existsSync(downloads)) return "";
+  const files = readdirSync(downloads)
+    .filter((name) => /^client_secret.+\.json$/i.test(name) || /^client_secret\.json$/i.test(name))
+    .map((name) => join(downloads, name));
+  for (const file of files) {
+    try {
+      const clientId = clientIdFromJson(readFileSync(file, "utf8"));
+      if (looksLikeClientId(clientId)) {
+        saveEnvClientId(clientId);
+        return clientId;
+      }
+    } catch {
+      /* archivo ajenos o JSON roto */
+    }
+  }
+  return "";
+}
 
 function readBody(req: IncomingMessage): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -119,6 +179,10 @@ async function route(req: IncomingMessage, res: ServerResponse, next: () => void
         configured: Boolean(resolveKey()),
         model: resolveModel(),
       });
+      return;
+    }
+    if (url.startsWith("/api/google-client") && req.method === "GET") {
+      json(res, 200, { clientId: ingestDownloads() || readEnvClientId() });
       return;
     }
     if (url.startsWith("/api/analyze") && req.method === "POST") {
