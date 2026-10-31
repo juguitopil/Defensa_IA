@@ -65,6 +65,39 @@
   box-shadow: -18px 0 50px rgba(18, 36, 60, 0.18);
 }
 
+.grip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  width: 14px;
+  height: 100%;
+  cursor: col-resize;
+  touch-action: none;
+  pointer-events: auto;
+}
+
+.grip::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 3px;
+  background: #c5d0db;
+}
+
+.grip:hover::before,
+.grip:focus-visible::before,
+.grip:active::before {
+  width: 4px;
+  background: #1a4d73;
+}
+
+.grip:focus-visible {
+  outline: none;
+}
+
 .panel.embedded {
   position: relative;
   width: 100%;
@@ -77,7 +110,7 @@
   align-items: center;
   justify-content: space-between;
   height: 52px;
-  padding: 0 16px;
+  padding: 0 16px 0 20px;
   border-bottom: 1px solid #c5d0db;
 }
 
@@ -99,15 +132,20 @@
 .scroll {
   flex: 1;
   overflow: auto;
-  padding: 16px 18px 28px;
+  padding: 16px 18px 28px 22px;
 }
 
 .score {
   display: flex;
   gap: 14px;
   align-items: center;
-  padding: 14px 16px;
+  padding: 14px 16px 14px 20px;
   border-bottom: 1px solid #c5d0db;
+}
+
+.score > div:last-child {
+  flex: 1;
+  min-width: 0;
 }
 
 .score h2 {

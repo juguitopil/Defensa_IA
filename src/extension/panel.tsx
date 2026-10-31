@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { PumpkinMark } from "../components/PumpkinMark";
 import { riskLabel } from "../lib/format";
 import type { Mail, RiskLevel, SecurityReport } from "../types";
@@ -20,9 +21,69 @@ interface Props {
   mail: Mail | null;
   report: SecurityReport | null;
   embedded?: boolean;
+  width?: number;
+  onResize?: (px: number, persist?: boolean) => void;
 }
 
-export function ExtensionPanel({ open, onToggle, mail, report, embedded }: Props) {
+function Grip({ width, onResize }: { width: number; onResize: (px: number, persist?: boolean) => void }) {
+  const drag = useRef<{ x: number; width: number } | null>(null);
+
+  function endDrag() {
+    drag.current = null;
+    document.documentElement.classList.remove("sello-dragging");
+  }
+
+  return (
+    <div
+      className="grip"
+      role="separator"
+      tabIndex={0}
+      aria-orientation="vertical"
+      aria-label="Ancho de Sello"
+      aria-valuemin={280}
+      aria-valuemax={520}
+      aria-valuenow={Math.round(width)}
+      title="Arrastra para cambiar el ancho. Doble clic lo deja en el tamaño inicial."
+      onPointerDown={(event) => {
+        if (event.button !== 0) return;
+        event.preventDefault();
+        event.currentTarget.setPointerCapture(event.pointerId);
+        drag.current = { x: event.clientX, width };
+        document.documentElement.classList.add("sello-dragging");
+      }}
+      onPointerMove={(event) => {
+        if (!drag.current) return;
+        onResize(drag.current.width + drag.current.x - event.clientX);
+      }}
+      onPointerUp={(event) => {
+        if (!drag.current) return;
+        const next = drag.current.width + drag.current.x - event.clientX;
+        endDrag();
+        onResize(next, true);
+      }}
+      onPointerCancel={endDrag}
+      onDoubleClick={() => onResize(352, true)}
+      onKeyDown={(event) => {
+        const step = event.shiftKey ? 48 : 16;
+        if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          onResize(width + step, true);
+        } else if (event.key === "ArrowRight") {
+          event.preventDefault();
+          onResize(width - step, true);
+        } else if (event.key === "Home") {
+          event.preventDefault();
+          onResize(280, true);
+        } else if (event.key === "End") {
+          event.preventDefault();
+          onResize(520, true);
+        }
+      }}
+    />
+  );
+}
+
+export function ExtensionPanel({ open, onToggle, mail, report, embedded, width = 352, onResize }: Props) {
   if (!open) {
     return (
       <button type="button" className="tab" onClick={onToggle} aria-label="Mostrar Sello">
@@ -36,6 +97,7 @@ export function ExtensionPanel({ open, onToggle, mail, report, embedded }: Props
 
   return (
     <aside className={embedded ? "panel embedded" : "panel"} role="complementary" aria-label="Sello de seguridad">
+      {!embedded && onResize && <Grip width={width} onResize={onResize} />}
       <div className="head">
         <p>Sello</p>
         <button type="button" onClick={onToggle}>
