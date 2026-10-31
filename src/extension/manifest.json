@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "Sello",
+  "version": "0.1.0",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAr9TozAuEqsEbjKGpWFab8FxacVyaOpv5BB+USnLRJ+83AJwFroEDs+lEI0LVSNfIiVQDOc3i6YDB7YuS3eZ2O64EHPf5HDecrX2DlFmj7E1InhVIhFViWLovwGKEqhMqHK4PQ7lIZP5jtOlOcBKZn+83l+kWz9Zn64pANT3LsdUKNOebKDePpbD8IPyWqhiYnvNzZOIqa/jfek/07WV3hThQL7vFYh0UW80HdCQvpXGraEJeCs5ioERknuExZiku6AlwecyX3sMFpHe4TLN901nLV3ETvZIJ0KngumYi2D9lCEOKxqDtuOUtmoQjX0S2FfDFg6SyXhQQqInnNck48wIDAQAB",
+  "description": "Sello de confianza sobre Gmail. Analiza el correo abierto sin pedir otra sesión.",
+  "icons": {
+    "16": "icons/pumpkin.svg",
+    "32": "icons/pumpkin.svg",
+    "48": "icons/pumpkin.svg",
+    "128": "icons/pumpkin.svg"
+  },
+  "action": {
+    "default_title": "Sello",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/pumpkin.svg",
+      "32": "icons/pumpkin.svg"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://mail.google.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "permissions": ["storage", "scripting", "tabs"],
+  "host_permissions": ["https://mail.google.com/*"]
+}

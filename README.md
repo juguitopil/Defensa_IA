@@ -1,4 +1,42 @@
-# Defensa_IA — SafeUpdate (módulo embebible)
+# Defensa_IA
+
+Monorepo de la hackathon. Ahora mismo hay dos piezas:
+
+- **Sello** — extensión de Gmail con nota 0–100, semáforo y el porqué.
+- **SafeUpdate** — módulo embebible de evaluación preventiva de software.
+
+---
+
+# Sello
+
+Extensión para Chrome, Edge o Brave. Se pone a la **derecha de Gmail** y marca el correo abierto. No pide otra sesión: sirve con tu cuenta y con cualquier otra.
+
+## Instalar
+
+```bash
+corepack prepare pnpm@10.18.3 --activate
+pnpm install
+pnpm build:extension
+```
+
+1. Abre `chrome://extensions` (o `brave://extensions` / `edge://extensions`).
+2. Activa **Modo de desarrollador**.
+3. **Cargar descomprimida** → carpeta `dist-extension`.
+4. Entra en [Gmail](https://mail.google.com) y abre un mensaje.
+
+## Cómo se calcula el sello
+
+Se parte de 100 y se restan puntos solo por lo que hay en el mensaje.
+
+| Nota | Rango |
+| --- | --- |
+| Bajo riesgo | 75–100 |
+| Riesgo medio | 45–74 |
+| Alto riesgo | 0–44 |
+
+---
+
+# SafeUpdate (módulo embebible)
 
 Evaluación preventiva de software: evidencias estructuradas, cobertura del análisis e IA explicadora (plantilla determinista en MVP).
 
@@ -9,7 +47,6 @@ Evaluación preventiva de software: evidencias estructuradas, cobertura del aná
 ## Ejecutar
 
 ```powershell
-cd "C:\Users\Hp\VSC WORK\Defensa_IA"
 dotnet restore SafeUpdate.sln
 dotnet run --project src/SafeUpdate.Api/SafeUpdate.Api.csproj
 ```
@@ -66,10 +103,3 @@ web/                           UI liviana para embeber
 schemas/                       JSON Schema del informe
 tests/                         xUnit
 ```
-
-## Próximos pasos (pruebas técnicas avanzadas)
-
-1. Authenticode en worker Windows aislado.
-2. Fuente de reputación con API key y caché.
-3. JWT de la plataforma madre en lugar de headers demo.
-4. PostgreSQL para historial multi-usuario.

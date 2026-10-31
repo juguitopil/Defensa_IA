@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      body {
+        margin: 0;
+        width: 300px;
+        font: 600 14px/1.45 Commissioner, Segoe UI, sans-serif;
+        color: #1a2433;
+        background: #f8fafc;
+      }
+      main { padding: 16px 16px 18px; }
+      h1 { margin: 0 0 8px; font-size: 16px; }
+      p { margin: 0 0 8px; font-weight: 400; color: #536274; font-size: 13px; }
+      button {
+        display: block;
+        width: 100%;
+        margin-top: 10px;
+        border: 0;
+        border-radius: 10px;
+        background: #1a4d73;
+        color: #fff;
+        font: 650 13px/1 Commissioner, Segoe UI, sans-serif;
+        padding: 10px 12px;
+        cursor: pointer;
+      }
+      #status { min-height: 1.2em; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Sello</h1>
+      <p>Este recuadro no es el panel. El panel sale a la <strong>derecha de Gmail</strong> cuando abres un correo.</p>
+      <p id="status">Si Gmail ya está abierto, recarga esa pestaña (F5) y abre un mensaje.</p>
+      <button id="open" type="button">Abrir Gmail y mostrar el panel</button>
+    </main>
+    <script src="popup.js"></script>
+  </body>
+</html>
