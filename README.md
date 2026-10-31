@@ -2,14 +2,27 @@
 
 Monorepo de la hackathon. Ahora mismo hay dos piezas:
 
-- **Sello** — extensión de Gmail con nota 0–100, semáforo y el porqué.
+- **Sello** — sello de confianza sobre el correo, dentro de Gmail.
 - **SafeUpdate** — módulo embebible de evaluación preventiva de software.
 
 ---
 
 # Sello
 
-Extensión para Chrome, Edge o Brave. Se pone a la **derecha de Gmail** y marca el correo abierto. No pide otra sesión: sirve con tu cuenta y con cualquier otra.
+## La idea
+
+El correo es el canal habitual del phishing: facturas falsas, PDFs tramposos y enlaces que no van donde dicen. Gmail a veces avisa, pero la seguridad se siente como un extra.
+
+Sello es la marca que se ve al leer. Te quedas en Gmail, con tu cuenta o con cualquier otra, y al abrir un mensaje aparece a la derecha una nota de 0 a 100, un semáforo y el porqué. No pide otro inicio de sesión. No corta la lectura: si el riesgo es alto, avisa y puedes seguir leyendo. Los archivos no se ejecutan; solo se leen como texto.
+
+## Qué hay hoy
+
+- Extensión para Chrome, Edge o Brave. El panel vive a la derecha de Gmail.
+- Lee el mensaje abierto en la página y pone ahí la nota, el semáforo y la explicación.
+- Cuenta el remitente, los enlaces, los adjuntos y qué conviene hacer.
+- La barra izquierda del panel se arrastra. El ancho lo eliges tú, entre 280 y 520 px (un poco menos si la ventana es estrecha), y se recuerda. Gmail cede justo ese espacio, una sola vez, para que no quede un hueco con el tema de fondo.
+- Se puede ocultar. Queda una pestaña con la calabaza para volver a abrirlo.
+- Sigue habiendo un laboratorio web, con correos de ejemplo, para probar sin Gmail.
 
 ## Instalar
 
@@ -24,6 +37,8 @@ pnpm build:extension
 3. **Cargar descomprimida** → carpeta `dist-extension`.
 4. Entra en [Gmail](https://mail.google.com) y abre un mensaje.
 
+Si ya la tenías cargada, pulsa **Actualizar** en Sello y recarga Gmail.
+
 ## Cómo se calcula el sello
 
 Se parte de 100 y se restan puntos solo por lo que hay en el mensaje.
@@ -33,6 +48,17 @@ Se parte de 100 y se restan puntos solo por lo que hay en el mensaje.
 | Bajo riesgo | 75–100 |
 | Riesgo medio | 45–74 |
 | Alto riesgo | 0–44 |
+
+## Laboratorio
+
+```bash
+pnpm dev
+```
+
+- Bandeja de prueba: `http://localhost:5173`
+- Panel como en Gmail: `http://localhost:5173?lab=gmail`
+
+El detalle está en `DOCUMENTACION.md`.
 
 ---
 
